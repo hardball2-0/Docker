@@ -1,0 +1,46 @@
+version: "4"
+services:
+nextcloud:
+image: nextcloud:stable
+container_name: nextcloud
+environment:
+- MYSQL_PASSWORD=My-very-secure-password
+- MYSQL_DATABASE=Nextcloud
+- MYSQL_USER=Nextcloud
+- MYSQL_HOST=mariadb
+- REDIS_HOST=cache
+- PUID=1000
+- PGID=1000
+- TZ=Europe/Paris
+volumes:
+- /opt/nextcloud/config:/var/www/html/config
+- /opt/nextcloud/data:/var/www/html/data
+ports:
+- 6910:80
+depends_on:
+- mariadb
+- cache
+restart: unless-stopped
+
+mariadb:
+image: lscr.io/linuxserver/mariadb:latest
+container_name: nextcloud-mariadb
+environment:
+- PUID=1000
+- PGID=1000
+- MYSQL_ROOT_PASSWORD=My-very-secure-password-root
+- MYSQL_DATABASE=Nextcloud
+- MYSQL_USER=Nextcloud
+- MYSQL_PASSWORD=My-very-secure-password
+- TZ=Europe/Paris
+volumes:
+- /opt/mariadb:/config
+
+restart: unless-stopped
+
+cache:
+container_name: nextcloud-redis
+image: redis:latest
+restart: unless-stopped
+volumes:
+- /opt/redis:/data

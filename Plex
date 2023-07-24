@@ -1,0 +1,17 @@
+ersion: '3.7'
+services:
+  plex:
+    image: linuxserver/plex:latest
+    container_name: plex
+    restart: unless-stopped
+    ports:
+      - 32400:32400
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=Europe/Paris
+      #- PLEX_CLAIM=claim-
+    volumes:
+      - /opt/plex:/config
+      - /home/download:/tv
+      - /home/download:/movies
